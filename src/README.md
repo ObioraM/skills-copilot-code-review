@@ -6,6 +6,8 @@ A super simple FastAPI application that allows students to view and sign up for 
 
 - View all available extracurricular activities
 - Sign up for activities
+- View active announcements
+- Manage announcements (signed-in staff only)
 
 ## Getting Started
 
@@ -27,10 +29,18 @@ A super simple FastAPI application that allows students to view and sign up for 
 
 ## API Endpoints
 
-| Method | Endpoint                                                          | Description                                                         |
-| ------ | ----------------------------------------------------------------- | ------------------------------------------------------------------- |
-| GET    | `/activities`                                                     | Get all activities with their details and current participant count |
-| POST   | `/activities/{activity_name}/signup?email=student@mergington.edu` | Sign up for an activity                                             |
+| Method | Endpoint                                                                     | Description                                              |
+| ------ | ---------------------------------------------------------------------------- | -------------------------------------------------------- |
+| GET    | `/activities`                                                                | Get all activities with their details                    |
+| POST   | `/activities/{activity_name}/signup?email=student@mergington.edu`           | Sign up a student for an activity (teacher authenticated) |
+| POST   | `/activities/{activity_name}/unregister?email=student@mergington.edu`       | Unregister a student from an activity (teacher authenticated) |
+| POST   | `/auth/login?username={username}&password={password}`                        | Sign in as a staff user                                  |
+| GET    | `/auth/check-session?username={username}`                                    | Validate an existing staff session                       |
+| GET    | `/announcements`                                                             | Get currently active announcements                       |
+| GET    | `/announcements/manage?teacher_username={username}`                          | Get all announcements for management (signed-in staff)   |
+| POST   | `/announcements?teacher_username={username}`                                 | Create announcement (requires `message` and `expiration_date`) |
+| PUT    | `/announcements/{announcement_id}?teacher_username={username}`               | Update announcement                                      |
+| DELETE | `/announcements/{announcement_id}?teacher_username={username}`               | Delete announcement                                      |
 
 ## Data Model
 
@@ -47,4 +57,4 @@ The application uses a simple data model with meaningful identifiers:
    - Name
    - Grade level
 
-All data is stored in memory, which means data will be reset when the server restarts.
+All data is stored in MongoDB. The app initializes sample activities, teacher accounts, and an example announcement when collections are empty.
